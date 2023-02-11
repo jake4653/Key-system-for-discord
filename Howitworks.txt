@@ -1,0 +1,5 @@
+When a user types .createkey (duration) in a Discord channel, the bot generates a 24 character random key made up of the letters 'a', 'b', 'c', 'd', 'e', 'f' and the numbers '1', '2', '3', '4', '5', '6' and writes it to a file called keys.txt along with the duration the key should last. The bot then sends a message to the channel displaying the generated key.
+
+When a user types .redeem (key) in a Discord channel, the bot checks the contents of the keys.txt file to see if the provided key exists. If it does, the bot assigns the Discord role with the ID 1071635952394584146 to the user who typed the command and starts a task to remove the role after the specified duration. The duration is specified when the key was created with the .createkey command. The task uses the asyncio library to wait for the specified amount of time before removing the role.
+
+The bot uses the commands extension from the discord.ext module to define the createkey and redeem commands. The code uses the discord.utils.get function to retrieve the role with the specified ID and the add_roles and remove_roles methods to add and remove the role from a user respectively.

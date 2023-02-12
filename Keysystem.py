@@ -18,7 +18,7 @@ async def createkey(ctx, duration: str):
 
 @bot.command()
 async def redeem(ctx, key: str):
-    role = discord.utils.get(ctx.guild.roles, id=1041197916183871498)
+    role = discord.utils.get(ctx.guild.roles, id=youroleidhere)
     record = db.search(tinydb.Query().key == key)
     if record:
         record = record[0]

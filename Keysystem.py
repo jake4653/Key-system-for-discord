@@ -7,7 +7,7 @@ from discord.ext import commands
 from random import randint
 bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())
 gay = random.randint(45,95)
-token = "urtokenhere"
+token = "YOURTOKENHERE"
 db = tinydb.TinyDB('keys.json')
 
 @bot.command()
@@ -22,7 +22,7 @@ async def createkey(ctx, duration: str):
 
 @bot.command()
 async def redeem(ctx, key: str):
-    role = discord.utils.get(ctx.guild.roles, id=1041197916183871498)
+    role = discord.utils.get(ctx.guild.roles, id=YOURIDHERE)
     record = db.search(tinydb.Query().key == key)
     if record:
         record = record[0]
@@ -50,7 +50,7 @@ async def remove_role_after_duration(user, role, duration):
         await user.send("__**Your key has expired for Balls server. Rebuy if you want the role back ;)**__")
 
 def calculate_duration(duration):
-    duration_map = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}
+    duration_map = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400, 'y': 31536000, }
     unit = duration[-1]
     if unit not in duration_map:
         return

@@ -4,36 +4,43 @@ import random
 import tinydb
 import datetime
 from discord.ext import commands
-
+from random import randint
 bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())
-
+gay = random.randint(45,95)
+token = "urtokenhere"
 db = tinydb.TinyDB('keys.json')
 
 @bot.command()
 async def createkey(ctx, duration: str):
     key = ''.join(random.choices(['a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5', '6'], k=24))
     db.insert({'key': key, 'duration': duration, 'used': False, 'expiration_timestamp': 0})
-    embed = discord.Embed(title="Key was created", description=f"Here's the key: {key}", color=0xe74c3c)
+    
+    embed = discord.Embed(title="Key Created", description=f"Here's your key master: `{key}`", color=0x9b59b6)
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1074008649346850886/1075521628852715620/giphy.gif")
+    embed.set_footer(text="Expires in: " + duration)
     await ctx.send(embed=embed)
 
 @bot.command()
 async def redeem(ctx, key: str):
-    role = discord.utils.get(ctx.guild.roles, id=youroleidhere)
+    role = discord.utils.get(ctx.guild.roles, id=1041197916183871498)
     record = db.search(tinydb.Query().key == key)
     if record:
         record = record[0]
         if not record['used']:
             await ctx.author.add_roles(role)
-            embed = discord.Embed(title="Role was given", description=f"Role given to {ctx.author}", color=0xe74c3c)
-            await ctx.send(embed=embed)
             duration = calculate_duration(record['duration'])
             db.update({'used': True, 'expiration_timestamp': int(datetime.datetime.now().timestamp()) + duration}, tinydb.Query().key == key)
             asyncio.create_task(remove_role_after_duration(ctx.author, role, duration))
+
+            embed = discord.Embed(title="Role Given", description=f"Role granted to master {ctx.author.mention}\nBtw you are {gay}% gay don't ask why", color=0x9b59b6)
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1074008649346850886/1075521628852715620/giphy.gif")
+            embed.set_footer(text=f"Expires in: {record['duration']}")
+            await ctx.send(embed=embed)
         else:
-            embed = discord.Embed(title="Sorry this key has been used", description="The key you entered was already used\nStop trying to snipe :sob:", color=0xe74c3c)
+            embed = discord.Embed(title="Invalid Key", description="The key you entered was already used.\nStop trying to snipe! 😭", color=0xe74c3c)
             await ctx.send(embed=embed)
     else:
-        embed = discord.Embed(title="Key doesn't work", description="The key you entered was not valid.", color=0xe74c3c)
+        embed = discord.Embed(title="Invalid Key", description="The key you entered was not valid.", color=0xe74c3c)
         await ctx.send(embed=embed)
 
 async def remove_role_after_duration(user, role, duration):
@@ -50,22 +57,5 @@ def calculate_duration(duration):
     duration = int(duration[:-1]) * duration_map[unit]
     return duration
 
-@bot.command()
-async def status(ctx, key: str):
-    record = db.search(tinydb.Query().key == key)
-    if record:
-        record = record[0]
-        if not record['used']:
-            embed = discord.Embed(title="Key status", description=f"Key not used", color=0xe74c3c)
-            await ctx.send(embed=embed)
-        else:
-            expiration_timestamp = record['expiration_timestamp']
-            expiration_datetime = datetime.datetime.fromtimestamp(expiration_timestamp)
-            embed = discord.Embed(title="Key status", description=f"Expiration date: {expiration_datetime.strftime('%Y-%m-%d %H:%M:%S')}", color=0xe74c3c)
-            await ctx.send(embed=embed)
-    else:
-        embed = discord.Embed(title="Key status", description=f"Key not found", color=0xe74c3c)
-        await ctx.send(embed=embed)
 
-
-bot.run('token')
+bot.run(token)
